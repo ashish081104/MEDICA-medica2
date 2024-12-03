@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medica - Next-Gen Healthcare</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        // Check if user is already logged in
+        window.onload = function() {
+            if (localStorage.getItem('currentUser')) {
+                window.location.href = 'dashboard.html';
+            }
+        }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            background: radial-gradient(circle at center, #001a00 0%, #000 100%);
+        }
+
+        .tech-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(45deg, transparent 48%, #0f0 49%, transparent 51%) 0 0 / 10px 10px,
+                linear-gradient(-45deg, transparent 48%, #0f0 49%, transparent 51%) 0 0 / 10px 10px;
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .circuit-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(to right, #0f05 1px, transparent 1px),
+                linear-gradient(to bottom, #0f05 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .hero {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .logo-container {
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo {
+            font-size: 5rem;
+            color: #fff;
+            text-shadow: 0 0 20px #0f0;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo i {
+            color: #0f0;
+            filter: drop-shadow(0 0 10px #0f0);
+        }
+
+        .tech-circle {
+            position: absolute;
+            border: 2px solid #0f03;
+            border-radius: 50%;
+            animation: rotate 20s linear infinite;
+        }
+
+        .tech-circle:nth-child(1) {
+            width: 200px;
+            height: 200px;
+            border-top-color: #0f0;
+            border-right-color: #0f0;
+        }
+
+        .tech-circle:nth-child(2) {
+            width: 220px;
+            height: 220px;
+            border-bottom-color: #0f0;
+            border-left-color: #0f0;
+            animation-direction: reverse;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #0f0;
+            margin-bottom: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            position: relative;
+        }
+
+        .subtitle::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #0f0, transparent);
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 3rem;
+            font-size: 1.2rem;
+            color: #fff;
+            background: linear-gradient(45deg, #040 0%, #0a0 100%);
+            border: none;
+            border-radius: 30px;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 4rem;
+            cursor: pointer;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,255,0,0.2);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            width: 100%;
+        }
+
+        .feature-card {
+            background: rgba(0,50,0,0.3);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #0f02;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(0,255,0,0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: #0f0;
+            box-shadow: 0 5px 15px rgba(0,255,0,0.2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: #0f0;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+
+        .feature-text {
+            color: #aaa;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .logo { font-size: 3rem; }
+            .subtitle { font-size: 1.2rem; }
+            .features { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tech-overlay"></div>
+        <div class="circuit-lines"></div>
+        
+        <div class="hero">
+            <div class="logo-container">
+                <div class="tech-circle"></div>
+                <div class="tech-circle"></div>
+                <h1 class="logo">
+                    <i class="fas fa-plus-circle"></i>
+                    Medica
+                </h1>
+            </div>
+            
+            <p class="subtitle">Next-Gen OPD Management System</p>
+            
+            <button onclick="window.location.href='login.html'" class="cta-button">
+                <i class="fas fa-sign-in-alt"></i> Login / Sign Up
+            </button>
+
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-bed feature-icon"></i>
+                    <h3 class="feature-title">Smart Bed Management</h3>
+                    <p class="feature-text">Real-time tracking and intelligent allocation of hospital beds with predictive analytics and instant status updates</p>
+                </div>
+
+                <div class="feature-card">
+                    <i class="fas fa-user-md feature-icon"></i>
+                    <h3 class="feature-title">Staff Optimization</h3>
+                    <p class="feature-text">Advanced staff scheduling and workload management system powered by AI-driven insights</p>
+                </div>
+
+                <div class="feature-card">
+                    <i class="fas fa-chart-line feature-icon"></i>
+                    <h3 class="feature-title">Predictive Analytics</h3>
+                    <p class="feature-text">Comprehensive data visualization and forecasting tools for better healthcare resource management</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

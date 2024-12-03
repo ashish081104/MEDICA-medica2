@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medica - OPD Bed Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Add these styles for profile dropdown and logout animation */
+        .profile-section {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            background: #0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(0,50,0,0.9);
+            border: 1px solid #0f03;
+            border-radius: 10px;
+            padding: 1rem;
+            min-width: 200px;
+            display: none;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            animation: dropdownFade 0.3s ease;
+        }
+
+        @keyframes dropdownFade {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-dropdown.show {
+            display: block;
+        }
+
+        .profile-info {
+            border-bottom: 1px solid #0f03;
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .username-display {
+            color: #0f0;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 0.5rem;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            color: #0f0;
+            background: rgba(0,255,0,0.1);
+            border-radius: 5px;
+        }
+
+        .logout-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .logout-content {
+            text-align: center;
+            animation: logoutPop 0.5s ease-out;
+        }
+
+        @keyframes logoutPop {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+        }
+
+        .logout-message {
+            color: #0f0;
+            font-size: 1.5rem;
+            margin-top: 1rem;
+            text-shadow: 0 0 10px #0f0;
+        }
+
+        /* Logout Animation */
+        .logout-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #0f0;
+            border-radius: 50%;
+            animation: particleExplode 1s ease-out forwards;
+        }
+
+        @keyframes particleExplode {
+            0% {
+                transform: translate(-50%, -50%) rotate(var(--angle)) translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(var(--angle)) translateY(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Switch Toggle */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #333;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #0f0;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1rem 0;
+        }
+    </style>
+    <script>
+        // Check if user is logged in
+        if (!localStorage.getItem('currentUser')) {
+            window.location.href = 'login.html';
+        }
+
+        // Add logout functionality
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body>
+    <!-- Logout Animation -->
+    <div class="logout-animation" id="logoutAnimation">
+        <div class="logout-content">
+            <div class="logout-message">Logging Out...</div>
+        </div>
+    </div>
+
+    <!-- DNA Background Animation -->
+    <div class="dna-bg"></div>
+
+    <!-- Advanced Navigation Bar -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <!-- Logo Section -->
+                <a href="index.html" class="nav-brand">
+                    <div class="brand-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div class="brand-text">
+                        <h1 class="brand-name">Medica</h1>
+                        <span class="brand-subtitle">OPD Management</span>
+                    </div>
+                </a>
+
+                <!-- Navigation Links -->
+                <div class="nav-menu">
+                    <a href="#dashboard" class="nav-item active">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#beds" class="nav-item">
+                        <i class="fas fa-bed"></i>
+                        <span>Bed Status</span>
+                    </a>
+                    <a href="#patients" class="nav-item">
+                        <i class="fas fa-user-injured"></i>
+                        <span>Patients</span>
+                    </a>
+                    <a href="#staff" class="nav-item">
+                        <i class="fas fa-user-md"></i>
+                        <span>Staff</span>
+                    </a>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="nav-actions">
+                    <button class="action-btn" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">2</span>
+                    </button>
+                    <button class="action-btn" title="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <div class="profile-section" onclick="toggleProfileDropdown()">
+                        <div class="profile-icon" id="profileIcon"></div>
+                        <div class="profile-dropdown" id="profileDropdown">
+                            <div class="profile-info">
+                                <div class="username-display" id="usernameDisplay"></div>
+                            </div>
+                            <button class="logout-btn" onclick="handleLogout(event)">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="main-content">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="dashboard-section">
+            <div class="container">
+                <div class="dashboard-grid">
+                    <!-- Stats Cards -->
+                    <div class="stats-card total-beds">
+                        <i class="fas fa-bed"></i>
+                        <h3>Total Beds</h3>
+                        <p class="count">50</p>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 80%;"></div>
+                        </div>
+                    </div>
+                    <div class="stats-card available-beds">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>Available</h3>
+                        <p class="count">12</p>
+                        <span class="trend up">+2 today</span>
+                    </div>
+                    <div class="stats-card occupied-beds">
+                        <i class="fas fa-user-injured"></i>
+                        <h3>Occupied</h3>
+                        <p class="count">38</p>
+                        <span class="trend down">-2 today</span>
+                    </div>
+                    <div class="stats-card emergency">
+                        <i class="fas fa-ambulance"></i>
+                        <h3>Emergency</h3>
+                        <p class="count">5</p>
+                        <span class="status critical">Critical</span>
+                    </div>
+                </div>
+
+                <!-- Real-time Bed Status -->
+                <div class="bed-status-container">
+                    <div class="section-header">
+                        <h2>Real-time Bed Status</h2>
+                        <div class="filters">
+                            <button class="filter-btn active" data-filter="all">All</button>
+                            <button class="filter-btn" data-filter="available">Available</button>
+                            <button class="filter-btn" data-filter="occupied">Occupied</button>
+                            <button class="filter-btn" data-filter="maintenance">Maintenance</button>
+                        </div>
+                    </div>
+                    <div class="bed-grid" id="bedGrid">
+                        <!-- Bed items will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="activity-container">
+                    <h2>Recent Activity</h2>
+                    <div class="activity-list" id="activityList">
+                        <!-- Activity items will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Get current user and display in profile
+        const currentUser = localStorage.getItem('currentUser');
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+
+        // Set profile icon and username
+        const profileIcon = document.getElementById('profileIcon');
+        const usernameDisplay = document.getElementById('usernameDisplay');
+        profileIcon.textContent = currentUser.charAt(0).toUpperCase();
+        usernameDisplay.textContent = currentUser;
+
+        // Toggle profile dropdown
+        function toggleProfileDropdown() {
+            const dropdown = document.getElementById('profileDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.matches('.profile-section') && 
+                !event.target.matches('.profile-icon') && 
+                !event.target.matches('.profile-dropdown')) {
+                const dropdown = document.getElementById('profileDropdown');
+                if (dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        }
+
+        // Handle logout with animation
+        function handleLogout(event) {
+            event.stopPropagation();
+            const logoutAnimation = document.getElementById('logoutAnimation');
+            logoutAnimation.style.display = 'flex';
+            
+            setTimeout(() => {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            }, 1500);
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

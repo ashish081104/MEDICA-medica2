@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Medica</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #001a00 0%, #000 100%);
+        }
+
+        .login-container {
+            position: relative;
+            background: rgba(0, 20, 0, 0.7);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #0f04;
+            box-shadow: 0 0 30px #0f02;
+            backdrop-filter: blur(10px);
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0,255,0,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #0f0;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #0f03;
+            border-radius: 5px;
+            background: rgba(0,15,0,0.3);
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #0f0;
+            box-shadow: 0 0 10px rgba(0,255,0,0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 5px;
+            background: linear-gradient(45deg, #006600 0%, #00cc00 100%);
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 20px #0f03;
+            text-shadow: 0 0 5px #0f0;
+        }
+
+        .btn:hover {
+            background: linear-gradient(45deg, #00cc00 0%, #006600 100%);
+            box-shadow: 0 0 30px #0f05;
+            transform: translateY(-2px);
+        }
+
+        .switch-form {
+            margin-top: 1rem;
+            text-align: center;
+            color: #0f0;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+        }
+
+        .switch-form:hover {
+            text-decoration: underline;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #0f0;
+            font-size: 1.5rem;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 0 10px #0f0;
+        }
+
+        .error-message {
+            display: none;
+            color: #ff4444;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        /* Ben 10 Theme Background */
+        .medical-bg {
+            background: radial-gradient(circle at center, #003300 0%, #001100 50%, #000000 100%);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        /* Omnitrix Effect */
+        .omnitrix-ring {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            border: 4px solid #0f0;
+            border-radius: 50%;
+            box-shadow: 0 0 50px #0f0;
+            animation: pulse 4s ease-in-out infinite;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .omnitrix-ring::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border: 4px solid #0f0;
+            border-radius: 50%;
+            animation: rotate 10s linear infinite;
+        }
+
+        .omnitrix-ring::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: #0f0;
+            border-radius: 50%;
+            box-shadow: 0 0 30px #0f0;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Hexagon Grid */
+        .hex-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(60deg, #0f03 1px, transparent 1px),
+                linear-gradient(-60deg, #0f03 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            opacity: 0.2;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            from { background-position: 0 0; }
+            to { background-position: 40px 40px; }
+        }
+
+        /* Particles Animation */
+        .particles-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #002200 0%, #001100 50%, #000000 100%);
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #0f0;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 30px #0f0;
+            animation: float-particle var(--duration) linear infinite;
+            opacity: var(--opacity);
+        }
+
+        @keyframes float-particle {
+            0% {
+                transform: translateY(100vh) scale(0);
+            }
+            50% {
+                transform: translateY(50vh) scale(1);
+            }
+            100% {
+                transform: translateY(0) scale(0);
+            }
+        }
+
+        /* Medical Background Animation */
+        .dna-strand {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            animation: rotate 30s linear infinite;
+        }
+
+        .dna-helix {
+            position: absolute;
+            width: 2px;
+            height: 20px;
+            background: rgba(0, 255, 0, 0.2);
+            transform-origin: center;
+            box-shadow: 0 0 10px #0f0;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .medical-icon {
+            position: absolute;
+            color: rgba(0, 255, 0, 0.1);
+            animation: float 20s linear infinite;
+            font-size: 2rem;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(0, -100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .success-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .success-content {
+            text-align: center;
+            animation: successPop 0.5s ease-out;
+        }
+
+        @keyframes successPop {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+            70% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .checkmark {
+            display: block;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            stroke-width: 2;
+            stroke: #0f0;
+            stroke-miterlimit: 10;
+            margin: 10% auto;
+            box-shadow: 0 0 20px #0f0;
+            animation: checkmark 0.5s ease-in-out 0.3s forwards;
+            opacity: 0;
+        }
+
+        @keyframes checkmark {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .success-message {
+            color: #0f0;
+            font-size: 1.5rem;
+            margin-top: 1rem;
+            text-shadow: 0 0 10px #0f0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Ben 10 Theme Background -->
+    <div class="medical-bg"></div>
+    <div class="hex-grid"></div>
+    <div class="omnitrix-ring"></div>
+
+    <!-- Particles Background -->
+    <div class="particles-bg" id="particlesBg"></div>
+
+    <!-- Animated Medical Background -->
+    <div class="medical-bg" id="medicalBg"></div>
+
+    <!-- Success Animation Container -->
+    <div class="success-animation" id="successAnimation">
+        <div class="success-content">
+            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+            <div class="success-message">Login Successful!</div>
+        </div>
+    </div>
+
+    <div class="login-container">
+        <form id="loginForm">
+            <h2 class="form-title">Login to Medica</h2>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+                <div class="error-message" id="usernameError"></div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <div class="error-message" id="passwordError"></div>
+            </div>
+            <button type="submit" class="btn">Login</button>
+            <div class="switch-form" onclick="toggleForm()">Don't have an account? Sign up</div>
+        </form>
+
+        <form id="signupForm" style="display: none;">
+            <h2 class="form-title">Create Account</h2>
+            <div class="form-group">
+                <label for="newUsername">Username</label>
+                <input type="text" id="newUsername" name="newUsername" required>
+                <div class="error-message" id="newUsernameError"></div>
+            </div>
+            <div class="form-group">
+                <label for="newPassword">Password</label>
+                <input type="password" id="newPassword" name="newPassword" required>
+                <div class="error-message" id="newPasswordError"></div>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                <div class="error-message" id="confirmPasswordError"></div>
+            </div>
+            <button type="submit" class="btn">Sign Up</button>
+            <div class="switch-form" onclick="toggleForm()">Already have an account? Login</div>
+        </form>
+    </div>
+
+    <script>
+        function toggleForm() {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            
+            if (loginForm.style.display === 'none') {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+            }
+
+            // Clear all error messages
+            document.querySelectorAll('.error-message').forEach(elem => {
+                elem.style.display = 'none';
+            });
+        }
+
+        function showSuccessAnimation() {
+            const successAnimation = document.getElementById('successAnimation');
+            successAnimation.style.display = 'flex';
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 2000);
+        }
+
+        // Handle login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Get users from localStorage
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+
+            // Check credentials
+            if (users[username] && users[username].password === password) {
+                // Store current user
+                localStorage.setItem('currentUser', username);
+                
+                // Show success animation
+                showSuccessAnimation();
+            } else {
+                document.getElementById('passwordError').textContent = 'Invalid username or password';
+                document.getElementById('passwordError').style.display = 'block';
+            }
+        });
+
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('newUsername').value;
+            const password = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Clear previous error messages
+            document.querySelectorAll('.error-message').forEach(elem => {
+                elem.style.display = 'none';
+            });
+
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                document.getElementById('confirmPasswordError').textContent = 'Passwords do not match';
+                document.getElementById('confirmPasswordError').style.display = 'block';
+                return;
+            }
+
+            // Get existing users
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+
+            // Check if username exists
+            if (users[username]) {
+                document.getElementById('newUsernameError').textContent = 'Username already exists';
+                document.getElementById('newUsernameError').style.display = 'block';
+                return;
+            }
+
+            // Add new user
+            users[username] = {
+                password: password,
+                createdAt: new Date().toISOString()
+            };
+
+            // Save to localStorage
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', username);
+
+            // Show success animation
+            showSuccessAnimation();
+        });
+
+        // Background Animation
+        function createMedicalBackground() {
+            const bg = document.getElementById('medicalBg');
+            
+            // Create floating medical icons
+            const icons = ['⚕', '🔬', '💊', '💉', '🩺', '🫀', '🧬', '⚕'];
+            for (let i = 0; i < 20; i++) {
+                const icon = document.createElement('div');
+                icon.className = 'medical-icon';
+                icon.textContent = icons[Math.floor(Math.random() * icons.length)];
+                icon.style.left = `${Math.random() * 100}%`;
+                icon.style.animationDelay = `${Math.random() * 20}s`;
+                bg.appendChild(icon);
+            }
+
+            // Create DNA helix
+            const dnaStrand = document.createElement('div');
+            dnaStrand.className = 'dna-strand';
+            for (let i = 0; i < 50; i++) {
+                const helix1 = document.createElement('div');
+                const helix2 = document.createElement('div');
+                helix1.className = helix2.className = 'dna-helix';
+                
+                const y = (i * 30);
+                const angle1 = i * 18;
+                const angle2 = angle1 + 180;
+                
+                helix1.style.top = `${y}px`;
+                helix2.style.top = `${y}px`;
+                helix1.style.transform = `rotate(${angle1}deg) translateX(20px)`;
+                helix2.style.transform = `rotate(${angle2}deg) translateX(20px)`;
+                
+                dnaStrand.appendChild(helix1);
+                dnaStrand.appendChild(helix2);
+            }
+            bg.appendChild(dnaStrand);
+        }
+
+        // Create particles animation
+        function createParticles() {
+            const container = document.getElementById('particlesBg');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                
+                // Random duration between 3-8 seconds
+                particle.style.setProperty('--duration', `${3 + Math.random() * 5}s`);
+                
+                // Random opacity between 0.2-0.6
+                particle.style.setProperty('--opacity', `${0.2 + Math.random() * 0.4}`);
+                
+                // Random delay
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // Initialize background
+        document.addEventListener('DOMContentLoaded', function() {
+            createMedicalBackground();
+            createParticles();
+        });
+    </script>
+</body>
+</html>
